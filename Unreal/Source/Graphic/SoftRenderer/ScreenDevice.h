@@ -49,19 +49,23 @@
  *	【说明】：下面的代码根据上面的流水线来讲解和划分
  *	绘制调用堆栈：
  *		HScreenDevice::Draw					
- *			HScreenDevice::ClearScreen
- *			HCube::Draw
- *				HCube::DrawBox
- *					HCube::DrawPlane
- *						HCube::DrawTriangle
- *							HCube::UpdateMVPMat()
- *							HCube.HTransformMulMVPMat
- *							CheckInCVV
- *							HomogenizeToScreenCoord
- *							Initrhw
- *							CalculateTrap
- *							DrawTrap
- *							  HCube::DrawScanline
+ *			HScreenDevice::ClearScreen									清屏
+ *			HCube::Draw													Cube绘制
+ *				HCube::DrawBox											立方体绘制
+ *					HCube::DrawPlane									长方形绘制
+ *						HCube::DrawTriangle								三角形绘制
+ *						
+ *							HCube::UpdateMVPMat()							1、更新MVP矩阵							   -|
+ *							HCube::vert()									2、顶点着色器 之后就是裁剪空间坐标了		|
+ *																			3、曲面细分着色器 几何着色器【TODO】		|--->几何阶段
+ *							HCube::CheckTriangleInCVV()						4、裁剪 检查在不在裁剪空间里面				|
+ *							HCube::CalTriangleScreenSpacePos()				5、屏幕投射								   -|
+ *							
+ *							HCube::InitTriangleInterpn()					1、插值初始化 后面透视校正用			   -|
+ *							Triangle::CalculateTrap() DrawTrap DrawScanline 2、三角形设置、三角形遍历 得到片元信息		|--->光栅化阶段
+ *							HCube::frag										3、片元着色器							   -|
+ *							
+ *							ZTest Zwrite
  *						
  *						
 */						
@@ -999,8 +1003,11 @@ public:
 
 					float u = scanline.v.uv.u * w;
 					float v = scanline.v.uv.v * w;
-
-					uint32 color = Texture.RreadTexture(u, v);
+					v2f fragIn;
+					fragIn.uv.u = u;
+					fragIn.uv.v = v;
+					uint32 color = frag(fragIn);//片元着色器
+					
 					framebuffer[x + y * ScreenWidth] = color;
 				}
 			}
@@ -1086,6 +1093,13 @@ public:
 		v2f output;
 		output.pos = Transform.MulMVPMat(v.pos);
 		return output;
+	}
+
+	//简单的片元着色器
+	uint32 frag(v2f f)
+	{
+		uint32 color = Texture.RreadTexture(f.uv.u, f.uv.v);
+		return color;
 	}
 		
 
