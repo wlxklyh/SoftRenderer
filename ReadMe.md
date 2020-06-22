@@ -26,6 +26,7 @@ MainScene下面有个Canvas Canvas有个Image,MainCode.cs脚本每帧会调用�
 
 
 ### 3、文档
-具体看代码的注释：
+具体看代码的注释：https://github.com/wlxklyh/SoftRenderer/blob/master/Unity/Assets/MainCode.cs
+
 ![](Img/2020-06-22-20-30-25.png)
 ## 三、android工程(TODO)
