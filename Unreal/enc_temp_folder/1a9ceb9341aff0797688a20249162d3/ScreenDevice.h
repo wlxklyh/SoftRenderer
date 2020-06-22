@@ -2,7 +2,7 @@
 
 #pragma once
 #include <math.h>
-//软渲染器参考：https://github.com/skywind3000/mini3d  
+//软渲染器参考copy：https://github.com/skywind3000/mini3d  
 //mini3d笔记：https://zhuanlan.zhihu.com/p/74510058
 //图形学流水线文章：https://positiveczp.github.io/%E7%BB%86%E8%AF%B4%E5%9B%BE%E5%BD%A2%E5%AD%A6%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF.pdf
 //意图：
