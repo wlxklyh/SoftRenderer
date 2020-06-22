@@ -68,7 +68,7 @@
  *							ZTest Zwrite
  *						
  *						
-*/						
+ */						
 
 
 
@@ -169,7 +169,7 @@ public:
 
 		//2、屏幕缓冲和深度缓冲 
 		FrameBuff = (unsigned char*)malloc(ScreenWidth * ScreenHeight * 4);
-		DepthBuff = (float*)malloc(ScreenWidth * ScreenHeight * 4);
+		DepthBuff = (float*)malloc(ScreenWidth * ScreenHeight);
 	}
 
 	// 清理屏幕
@@ -625,7 +625,7 @@ public:
 	HTransform()
 	{
 		Init();
-	}
+	} 
 
 	//Unity 里面就是 Position Rotation Scale来构建这个矩阵 后面这里可以拆分下更好理解
 	// ModelMatrix，就是将模型坐标变换到WorldMatrix的Matrix，WorldMatrix = Mt * Mr * Ms  ModleMatrix =  Mt * Mr * Ms
@@ -746,7 +746,7 @@ public:
 		HVertex HVertexRet;
 		if (d == 0.0f)
 		{
-			HVertexRet;
+			return HVertexRet;
 		}
 
 		float inv = 1.0f / d;
