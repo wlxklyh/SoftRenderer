@@ -21,6 +21,11 @@ https://github.com/wlxklyh/SoftRenderer/blob/master/Unreal/Source/Graphic/SoftRe
 MainScene下面有个Canvas Canvas有个Image,MainCode.cs脚本每帧会调用软渲染器的Draw,然后把FrameBuffer数据取出来 调用Unity的Texture2D.SetPixel接口 然后用Image把这个Texture2d显示出来。
 
 ### 2、使用
+用Unity打开工程，然后打开MainScene 然后点击运行
 ![](Img/UnityDemo.gif)
 
+
+### 3、文档
+具体看代码的注释：
+![](Img/2020-06-22-20-30-25.png)
 ## 三、android工程(TODO)
