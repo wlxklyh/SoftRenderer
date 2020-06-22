@@ -30,3 +30,10 @@ MainScene下面有个Canvas Canvas有个Image,MainCode.cs脚本每帧会调用�
 
 ![](Img/2020-06-22-20-30-25.png)
 ## 三、android工程(TODO)
+
+
+## 四、TODO
+- 三角形裁剪完善
+- 几何着色器和片元着色器完善
+- BRDF光照模型
+- 模板测试
