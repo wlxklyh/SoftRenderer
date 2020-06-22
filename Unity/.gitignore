@@ -1,0 +1,8 @@
+# gitignore folder
+
+.idea/
+
+Library/
+
+Temp/
+
