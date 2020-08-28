@@ -37,3 +37,7 @@ MainScene下面有个Canvas Canvas有个Image,MainCode.cs脚本每帧会调用�
 - 几何着色器和片元着色器完善
 - BRDF光照模型
 - 模板测试
+
+## 附
+**欢迎加微信讨论**
+![](Img/2020-08-28-14-03-04.png)
