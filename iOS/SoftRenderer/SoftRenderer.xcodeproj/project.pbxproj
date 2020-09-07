@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2E581A192502694F00326BF5 /* SoftRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E581A182502694F00326BF5 /* SoftRenderer.m */; };
 		2E73CC832501D14E009A62E7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E73CC822501D14E009A62E7 /* AppDelegate.m */; };
 		2E73CC862501D14E009A62E7 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E73CC852501D14E009A62E7 /* SceneDelegate.m */; };
 		2E73CC892501D14E009A62E7 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2E73CC882501D14E009A62E7 /* ViewController.m */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2E581A182502694F00326BF5 /* SoftRenderer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SoftRenderer.m; sourceTree = "<group>"; };
 		2E73CC7E2501D14E009A62E7 /* SoftRenderer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SoftRenderer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2E73CC812501D14E009A62E7 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		2E73CC822501D14E009A62E7 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -72,6 +74,7 @@
 				2E73CC8F2501D151009A62E7 /* LaunchScreen.storyboard */,
 				2E73CC922501D151009A62E7 /* Info.plist */,
 				2E73CC932501D151009A62E7 /* main.m */,
+				2E581A182502694F00326BF5 /* SoftRenderer.m */,
 			);
 			path = SoftRenderer;
 			sourceTree = "<group>";
@@ -150,6 +153,7 @@
 				2E73CC832501D14E009A62E7 /* AppDelegate.m in Sources */,
 				2E73CC942501D151009A62E7 /* main.m in Sources */,
 				2E73CC862501D14E009A62E7 /* SceneDelegate.m in Sources */,
+				2E581A192502694F00326BF5 /* SoftRenderer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
