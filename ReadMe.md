@@ -29,8 +29,12 @@ MainScene下面有个Canvas Canvas有个Image,MainCode.cs脚本每帧会调用�
 具体看代码的注释：https://github.com/wlxklyh/SoftRenderer/blob/master/Unity/Assets/MainCode.cs
 
 ![](Img/2020-06-22-20-30-25.png)
-## 三、android工程(TODO)
-
+## 三、android工程
+此工程给Android Programmer或者Java Programmer 想了解图形学、渲染管线的coder 阅读。
+下图是渲染一个正方体的效果
+![](img/../Img/2020-09-07-15-07-21.png)
+工程位置：https://github.com/wlxklyh/SoftRenderer/tree/master/Ado
+主代码和注释：https://github.com/wlxklyh/SoftRenderer/blob/master/Ado/app/src/main/java/com/wlxklyh/softrenderer/FirstFragment.java
 
 ## 四、TODO
 - 三角形裁剪完善
