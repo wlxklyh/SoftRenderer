@@ -1,12 +1,21 @@
 //
-//  SoftRenderer.m
+//  SoftRenderer.hpp
 //  SoftRenderer
 //
-//  Created by wlxk on 2020/9/4.
+//  Created by wlxk on 2020/9/16.
 //  Copyright © 2020 hawklin. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#ifndef SoftRenderer_hpp
+#define SoftRenderer_hpp
+
+#include <stdio.h>
+
+
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+#include <math.h>
 //软渲染器参考：https://github.com/skywind3000/mini3d
 //mini3d笔记：https://zhuanlan.zhihu.com/p/74510058
 //图形学流水线文章：https://positiveczp.github.io/%E7%BB%86%E8%AF%B4%E5%9B%BE%E5%BD%A2%E5%AD%A6%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF.pdf
@@ -28,21 +37,21 @@
  *    2、其中CPU阶段就是Application 应用阶段  GPU阶段包括了几何阶段和光栅化阶段
  *      +--------------+     +-----------------+  +----------------+   +----------------+
  *      |              |     |                 |  |                |   |                |
- *      |   应用阶段     +----->     几何阶段     +-->      光栅化     +--->     像素处理     |
+ *      |   应用阶段   +----->     几何阶段    +-->      光栅化    +--->     像素处理   |
  *      |              |     |                 |  |                |   |                |
  *      +--------------+     +-----------------+  +----------------+   +----------------+
  *
  *  3、几何阶段：
- *      +--------------+     +-----------------+  +------------------+   +-------------+  +-------------+
+ *        +--------------+     +-----------------+  +------------------+   +-------------+  +-------------+
  *      |              |     |                 |  |                  |   |             |  |             |
- *      |  顶点着色器    +----->    曲面细分着色器  +-->   几何着色器       +--->    裁剪     |-->  屏幕投射     |
+ *      |  顶点着色器  +-----> 曲面细分着色器  +-->   几何着色器     +--->    裁剪     |-->  屏幕投射   |
  *      |              |     |                 |  |                  |   |             |  |             |
  *      +--------------+     +-----------------+  +------------------+   +-------------+  +-------------+
  *
  *  4、光栅化阶段：
- *      +--------------+     +--------------+  +------------------+
+ *        +--------------+     +--------------+  +------------------+
  *      |              |     |              |  |                  |
- *      |  三角形遍历    +----->  三角形设置    +-->   片元着色器       |
+ *      |  三角形遍历  +----->  三角形设置  +-->   片元着色器     |
  *      |              |     |              |  |                  |
  *      +--------------+     +--------------+  +------------------+
  *
@@ -60,15 +69,15 @@
  *                    HCube::DrawPlane                                    长方形绘制
  *                        HCube::DrawTriangle                                三角形绘制
  *
- *                            HCube::UpdateMVPMat()                            1、更新MVP矩阵                                -|
- *                            HCube::vert()                                    2、顶点着色器 之后就是裁剪空间坐标了               |
- *                                                                             3、曲面细分着色器 几何着色器【TODO】              |--->几何阶段
- *                            HCube::CheckTriangleInCVV()                      4、裁剪 检查在不在裁剪空间里面                    |
- *                            HCube::CalTriangleScreenSpacePos()               5、屏幕投射                                   -|
+ *                            HCube::UpdateMVPMat()                            1、更新MVP矩阵                               -|
+ *                            HCube::vert()                                    2、顶点着色器 之后就是裁剪空间坐标了        |
+ *                                                                            3、曲面细分着色器 几何着色器【TODO】        |--->几何阶段
+ *                            HCube::CheckTriangleInCVV()                        4、裁剪 检查在不在裁剪空间里面                |
+ *                            HCube::CalTriangleScreenSpacePos()                5、屏幕投射                                   -|
  *
  *                            HCube::InitTriangleInterpn()                    1、插值初始化 后面透视校正用               -|
  *                            Triangle::CalculateTrap() DrawTrap DrawScanline 2、三角形设置、三角形遍历 得到片元信息        |--->光栅化阶段
- *                            HCube::frag                                        3、片元着色器                        s-|
+ *                            HCube::frag                                        3、片元着色器                               -|
  *
  *                            ZTest Zwrite
  *
@@ -80,52 +89,38 @@
 
 //===========================数学工具 Begin=============================
 //插值函数   t为[0,1]之间
-float Interp(float x1, float x2, float t) { return x1 + (x2 - x1) * t; }
+template<typename T>
+T Interp(T x1, T x2, T t) { return x1 + (x2 - x1) * t; }
+
 //Clamp函数 Value
-float Clamp(float x, float min, float max) { return (x < min) ? min : ((x > max) ? max : x); }
+template<typename T>
+T Clamp(T x, T min, T max) { return (x < min) ? min : ((x > max) ? max : x); }
 //===========================数学工具 End===============================
 
 //形状基类
-@protocol HShape
-@required
--(void) Draw;
-@end //HShape  <#superclass#>
+class HShape
+{
+public:
 
-
+    virtual void Draw() = 0;
+};
 
 //纹理  这里没有去读文件 直接在代码里面赋值了
-@interface HTexture : NSObject
+class HTexture
 {
-    int TextureW;
-    int TextureH;
-    NSMutableArray *Texture;
-}
--(void) Init;
-@end //HTexture
-
-@implementation HTexture
--(void) Init
-{
-    //初始化纹理
-    TextureW = 256;
-    TextureH = 256;
-    int i, j;
-    for (j = 0; j < TextureH; j++) {
-        NSMutableArray *nowRow = [[NSMutableArray alloc] init];
-        for (i = 0; i < TextureW; i++) {
-            int x = i / 32, y = j / 32;
-            int value = ((x + y) & 1) ? 0xffffffff : 0x3fbcefff;
-            [nowRow addObject:value];
-        }
-        
-    }
-}
-@end //HTexture
-
 public:
     HTexture()
     {
-        
+        //初始化纹理
+        TextureW = 256;
+        TextureH = 256;
+        int i, j;
+        for (j = 0; j < TextureH; j++) {
+            for (i = 0; i < TextureW; i++) {
+                int x = i / 32, y = j / 32;
+                Texture[j][i] = ((x + y) & 1) ? 0xffffffff : 0x3fbcefff;
+            }
+        }
     }
 
     int TextureW, TextureH;
@@ -187,8 +182,8 @@ public:
 
 
         //2、屏幕缓冲和深度缓冲
-        FrameBuff = (unsigned char*)malloc(ScreenWidth * ScreenHeight * 4);
-        DepthBuff = (float*)malloc(ScreenWidth * ScreenHeight);
+        FrameBuff = new unsigned char[ScreenWidth * ScreenHeight * 4];
+        DepthBuff = new float[ScreenWidth * ScreenHeight];
     }
 
     // 清理屏幕
@@ -1004,7 +999,7 @@ public:
     void DrawScanline(HScanline scanline)
     {
         HScreenDevice* ScreenDevice = HScreenDevice::GetInstance();
-        uint32* framebuffer = (uint32*)ScreenDevice->FrameBuff;
+        unsigned int* framebuffer = (unsigned int*)ScreenDevice->FrameBuff;
         float *zbuffer = ScreenDevice->DepthBuff;
 
         int x = scanline.x;
@@ -1025,7 +1020,7 @@ public:
                     v2f fragIn;
                     fragIn.uv.u = u;
                     fragIn.uv.v = v;
-                    uint32 color = frag(fragIn);//片元着色器
+                    unsigned int color = frag(fragIn);//片元着色器
                     
                     framebuffer[x + y * ScreenWidth] = color;
                 }
@@ -1115,9 +1110,9 @@ public:
     }
 
     //简单的片元着色器
-    uint32 frag(v2f f)
+    unsigned int frag(v2f f)
     {
-        uint32 color = Texture.RreadTexture(f.uv.u, f.uv.v);
+        unsigned int color = Texture.RreadTexture(f.uv.u, f.uv.v);
         return color;
     }
         
@@ -1207,6 +1202,15 @@ public:
 
 };
 //===========================光栅化阶段 End=============================
+
+//=====实例代码
+//1、初始化加一个立方体 HScreenDevice::GetInstance()->shape = new HCube();
+//2、绘制                HScreenDevice::GetInstance()->Draw();
+
+
+
+
+
 
 
 

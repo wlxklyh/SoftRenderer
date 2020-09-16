@@ -7,7 +7,7 @@
 //
 
 #import "ViewController.h"
-
+#include "SoftRenderer.h"
 @interface ViewController (){
     
 }
@@ -39,20 +39,29 @@
     
     
     self.view.backgroundColor = [UIColor blueColor];
+    int width = 400;
+    int height = 400;
+    HScreenDevice::GetInstance()->Init(width,height);
+    HScreenDevice::GetInstance()->shape = new HCube();
+    HScreenDevice::GetInstance()->Draw();
     
-    self.ContentView = [[UIImageView alloc] initWithFrame:CGRectMake(100, 100, 200, 200)];
+    self.ContentView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, width, height)];
     
-    char* rawImagePixels = malloc(200*200*4);
-    for(int i=0;i<200;i++)
+    char* rawImagePixels = new char[width*height*4];
+    for (int i = 0; i < HScreenDevice::GetInstance()->ScreenHeight; i++)
     {
-        for (int j=0; j<200; j++) {
-            rawImagePixels[(i*200+j)*4+0] = 0;
-            rawImagePixels[(i*200+j)*4+1] = 255;
-            rawImagePixels[(i*200+j)*4+2] = 0;
-            rawImagePixels[(i*200+j)*4+3] = 255;
+        for (int j = 0; j < HScreenDevice::GetInstance()->ScreenWidth; j++)
+        {
+            rawImagePixels[(i * HScreenDevice::GetInstance()->ScreenWidth + j) * 4 + 0] = HScreenDevice::GetInstance()->FrameBuff[(i * HScreenDevice::GetInstance()->ScreenWidth + j) * 4 + 0];
+            rawImagePixels[(i * HScreenDevice::GetInstance()->ScreenWidth + j) * 4 + 1] = HScreenDevice::GetInstance()->FrameBuff[(i * HScreenDevice::GetInstance()->ScreenWidth + j) * 4 + 1];
+            rawImagePixels[(i * HScreenDevice::GetInstance()->ScreenWidth + j) * 4 + 2] = HScreenDevice::GetInstance()->FrameBuff[(i * HScreenDevice::GetInstance()->ScreenWidth + j) * 4 + 2];
+            rawImagePixels[(i * HScreenDevice::GetInstance()->ScreenWidth + j) * 4 + 3] = HScreenDevice::GetInstance()->FrameBuff[(i * HScreenDevice::GetInstance()->ScreenWidth + j) * 4 + 3];
         }
     }
-    UIImage* image = [self convertBufferToUIImage: rawImagePixels width : 200 height :200];
+    
+    
+
+    UIImage* image = [self convertBufferToUIImage: rawImagePixels width : width height :height];
     self.ContentView.image = image;
     
     //free(rawImagePixels);
