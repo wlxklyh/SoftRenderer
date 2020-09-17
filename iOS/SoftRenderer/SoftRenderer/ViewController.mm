@@ -42,7 +42,17 @@
     int width = 400;
     int height = 400;
     HScreenDevice::GetInstance()->Init(width,height);
-    HScreenDevice::GetInstance()->shape = new HCube();
+    HCube* shape1 = new HCube();
+
+    HMatrix mat = GetRotateMat(0, 0.8, 0.8);
+    mat.m[3][0] = 2;
+    mat.m[2][0] = 0;
+    mat.m[1][0] = 0;
+    shape1->Transform.ModleMat = mat;
+    
+    HCube* shape2 = new HCube();
+    HScreenDevice::GetInstance()->shapeVec.push_back(shape1);
+    
     HScreenDevice::GetInstance()->Draw();
     
     self.ContentView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, width, height)];
@@ -68,6 +78,10 @@
     [self.view addSubview:self.ContentView];
 }
 
+
+- (void)dealloc {
+    NSLog(@"========   释放： dealloc   =======\n");
+}
 
 
 void dataProviderReleaseCallback (void *info, const void *data, size_t size)

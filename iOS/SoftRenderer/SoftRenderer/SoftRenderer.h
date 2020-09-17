@@ -10,7 +10,8 @@
 #define SoftRenderer_hpp
 
 #include <stdio.h>
-
+#include <map>
+#include <vector>
 
 // Fill out your copyright notice in the Description page of Project Settings.
 
@@ -157,12 +158,22 @@ public:
 
     //渲染的形状
     HShape *shape;
+    std::vector<HShape*> shapeVec;
     HScreenDevice()
     {
         shape = NULL;
     };
     ~HScreenDevice()
     {
+        if(FrameBuff)
+        {
+            free(FrameBuff);
+        }
+        if(DepthBuff)
+        {
+            free(DepthBuff);
+        }
+        
     };
     //屏幕分辨率宽
     int ScreenWidth;
@@ -214,10 +225,10 @@ public:
     {
         //1、清理屏幕缓冲
         ClearScreen();
-        //2、绘制一个图形
-        if (shape)
+        //2、绘制图形
+        for(int i=0;i<shapeVec.size();i++)
         {
-            shape->Draw();
+            shapeVec[i]->Draw();
         }
     }
 
@@ -1050,8 +1061,6 @@ public:
     //更新MVP矩阵
     void UpdateMVPMat()
     {
-        HMatrix mat = GetRotateMat(0, 0.8, 0.8);
-        Transform.ModleMat = mat;
         Transform.UpdateMVPMat();
     }
 
