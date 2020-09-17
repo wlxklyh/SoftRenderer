@@ -1,4 +1,14 @@
-# 
+# SoftRenderer
+![](https://badgen.net/badge/language/Java/green)![](https://badgen.net/badge/language/C++/green)![](https://badgen.net/badge/language/CSharp/green)
+![](https://badgen.net/badge/Platform/Android/cyan) ![](https://badgen.net/badge/Platform/iOS/cyan) ![](https://badgen.net/badge/Platform/Unity/cyan) ![](https://badgen.net/badge/Platform/Unreal/cyan)
+
+
+
+## 前言
+程序员的三大浪漫，编译原理、图形学、操作系统，所以我也有一种情节，想去学图形学。然后我拿起图形学的书，看完了第一章 似懂非懂，然后书又沾灰了。过了一段时间工作上遇到渲染管线相关的问题，然后又开始去网上看博客，看完之后也是似懂非懂，你是否也有跟我一样的经历了？然后看到了一篇文
+
+
+
 ## 一、Unreal工程
 ### 1、使用了Unreal的什么接口？
 UMainUICpp里面有个MainImage 每帧会把软渲染器的数据显示到MainImage中，除此之外，没使用Unreal的其他接口。
@@ -22,7 +32,7 @@ MainScene下面有个Canvas Canvas有个Image,MainCode.cs脚本每帧会调用�
 
 ### 2、使用
 用Unity打开工程，然后打开MainScene 然后点击运行
-![](Img/UnityDemo.gif)
+![](Img/![](Img/UnityDemo.gif).png)
 
 
 ### 3、文档
@@ -35,8 +45,10 @@ MainScene下面有个Canvas Canvas有个Image,MainCode.cs脚本每帧会调用�
 ![](img/../Img/2020-09-07-15-07-21.png)
 工程位置：https://github.com/wlxklyh/SoftRenderer/tree/master/Ado
 主代码和注释：https://github.com/wlxklyh/SoftRenderer/blob/master/Ado/app/src/main/java/com/wlxklyh/softrenderer/FirstFragment.java
-
-## 四、TODO
+## 四、iOS工程
+![](Img/2020-09-16-20-43-34.png)
+## 五、TODO
+后续要用C++跨平台。
 - 三角形裁剪完善
 - 几何着色器和片元着色器完善
 - BRDF光照模型
