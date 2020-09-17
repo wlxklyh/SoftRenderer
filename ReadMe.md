@@ -12,6 +12,10 @@ Android、iOS、Unity、Unreal都可以运行
 |![](https://badgen.net/badge/Platform/Unity/cyan) |![](https://badgen.net/badge/language/CSharp/green) |https://github.com/wlxklyh/SoftRenderer/tree/master/Unity|![](Img/2020-09-17-12-49-37.png)|
 |![](https://badgen.net/badge/Platform/Unreal/cyan) |![](https://badgen.net/badge/language/C++/green) |https://github.com/wlxklyh/SoftRenderer/tree/master/Unreal|![](Img/2020-09-17-12-49-41.png)|
 
+
+
+![](Img/anim.gif)
+
 ## 前言
 程序员的三大浪漫，编译原理、图形学、操作系统，所以我也有一种情节，想去学图形学。然后我拿起图形学的书，看完了第一章 似懂非懂，然后书又沾灰了。过了一段时间工作上遇到渲染管线相关的问题，然后又开始去网上看博客，看完之后也是似懂非懂，你是否也有跟我一样的经历了？Opengl的接口背后是什么呢？渲染管线怎么用程序表达。于是我找到一个skywind3000的软渲染器，然后自己再实现一遍，这样之后对渲染管线的理解更加深刻了。
 
