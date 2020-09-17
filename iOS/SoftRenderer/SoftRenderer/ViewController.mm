@@ -20,6 +20,8 @@
 
 @synthesize ContentView;
 
+HCube* shapeCube;
+
 - (UIImage*)convertBufferToUIImage:(void*)rawImagePixels width:(int)width height:(int)height
 {
     int totalBytesForImage = width * height * 4;
@@ -42,17 +44,14 @@
     int width = 400;
     int height = 400;
     HScreenDevice::GetInstance()->Init(width,height);
-    HCube* shape1 = new HCube();
+    shapeCube = new HCube();
+    HMatrix mat1 = GetRotateMat(0, 0.8, 0.8);
+    mat1.m[3][0] = 2;
+    mat1.m[2][0] = 0;
+    mat1.m[1][0] = 0;
+    shapeCube->Transform.ModleMat = mat1;
 
-    HMatrix mat = GetRotateMat(0, 0.8, 0.8);
-    mat.m[3][0] = 2;
-    mat.m[2][0] = 0;
-    mat.m[1][0] = 0;
-    shape1->Transform.ModleMat = mat;
-    
-    HCube* shape2 = new HCube();
-    HScreenDevice::GetInstance()->shapeVec.push_back(shape1);
-    
+    HScreenDevice::GetInstance()->shapeVec.push_back(shapeCube);
     HScreenDevice::GetInstance()->Draw();
     
     self.ContentView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, width, height)];
@@ -81,6 +80,11 @@
 
 - (void)dealloc {
     NSLog(@"========   释放： dealloc   =======\n");
+    HScreenDevice::GetInstance()->shapeVec.clear();
+    if(shapeCube)
+    {
+        free(shapeCube);
+    }
 }
 
 
