@@ -2,16 +2,20 @@
 ![](https://badgen.net/badge/language/Java/green)![](https://badgen.net/badge/language/C++/green)![](https://badgen.net/badge/language/CSharp/green)
 ![](https://badgen.net/badge/Platform/Android/cyan) ![](https://badgen.net/badge/Platform/iOS/cyan) ![](https://badgen.net/badge/Platform/Unity/cyan) ![](https://badgen.net/badge/Platform/Unreal/cyan)
 
+Android、iOS、Unity、Unreal都可以运行 
+---
+
 |平台|语言|效果|工程路径|
 |-|-|-|-|
-|![](https://badgen.net/badge/Platform/Android/cyan) |![](https://badgen.net/badge/language/Java/green) |![](Img/2020-09-17-12-49-22.png)|https://github.com/wlxklyh/SoftRenderer/tree/master/Ado|
-|![](https://badgen.net/badge/Platform/iOS/cyan) |![](https://badgen.net/badge/language/C++/green) |![](Img/2020-09-17-12-49-30.png)|https://github.com/wlxklyh/SoftRenderer/tree/master/iOS|
-|![](https://badgen.net/badge/Platform/Unity/cyan) |![](https://badgen.net/badge/language/CSharp/green) |![](Img/2020-09-17-12-49-37.png)|https://github.com/wlxklyh/SoftRenderer/tree/master/Unity|
-|![](https://badgen.net/badge/Platform/Unreal/cyan) |![](https://badgen.net/badge/language/C++/green) |![](Img/2020-09-17-12-49-41.png)|https://github.com/wlxklyh/SoftRenderer/tree/master/Unreal|
+|![](https://badgen.net/badge/Platform/Android/cyan) |![](https://badgen.net/badge/language/Java/green) |https://github.com/wlxklyh/SoftRenderer/tree/master/Ado|![](Img/2020-09-17-12-49-22.png)|
+|![](https://badgen.net/badge/Platform/iOS/cyan) |![](https://badgen.net/badge/language/C++/green) |https://github.com/wlxklyh/SoftRenderer/tree/master/iOS|![](Img/2020-09-17-12-49-30.png)|
+|![](https://badgen.net/badge/Platform/Unity/cyan) |![](https://badgen.net/badge/language/CSharp/green) |https://github.com/wlxklyh/SoftRenderer/tree/master/Unity|![](Img/2020-09-17-12-49-37.png)|
+|![](https://badgen.net/badge/Platform/Unreal/cyan) |![](https://badgen.net/badge/language/C++/green) |https://github.com/wlxklyh/SoftRenderer/tree/master/Unreal|![](Img/2020-09-17-12-49-41.png)|
 
 ## 前言
 程序员的三大浪漫，编译原理、图形学、操作系统，所以我也有一种情节，想去学图形学。然后我拿起图形学的书，看完了第一章 似懂非懂，然后书又沾灰了。过了一段时间工作上遇到渲染管线相关的问题，然后又开始去网上看博客，看完之后也是似懂非懂，你是否也有跟我一样的经历了？Opengl的接口背后是什么呢？渲染管线怎么用程序表达。于是我找到一个skywind3000的软渲染器，然后自己再实现一遍，这样之后对渲染管线的理解更加深刻了。
 
+通过代码来了解渲染管线 不调用图形库，ado、ios、unity、unreal都可以运行 
 
 ## 一、渲染管线
 
