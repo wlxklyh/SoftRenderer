@@ -1130,8 +1130,8 @@ public:
     //画三角形 传入的
     void DrawTriangle(HTriangle Triangle)
     {
-        //1、更新立方体的MVP矩阵
-        UpdateMVPMat();
+        //1、更新立方体的MVP矩阵 在外面更新
+        //UpdateMVPMat();
     
         //2.1、初始化裁剪空间坐标
         InitTriangleClipSpacePos(Triangle);
@@ -1207,6 +1207,7 @@ public:
 
     void Draw()
     {
+        UpdateMVPMat();
         DrawBox();
     }
 

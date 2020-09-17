@@ -9,18 +9,27 @@
 #import "ViewController.h"
 #include "SoftRenderer.h"
 @interface ViewController (){
-    
+    float RotateValue;
+    NSTimer *MainThreadSchduledTimer;
 }
 - (UIImage*)convertBufferToUIImage:(void*)rawImagePixels width:(int)width height:(int)height;
 
 @property UIImageView * ContentView;
+@property float RotateValue;
+@property UIImage* ImageContent;
 @end
 
 @implementation ViewController
 
 @synthesize ContentView;
+@synthesize RotateValue;
+@synthesize ImageContent;
 
-HCube* shapeCube;
+std::vector<HCube*> shapeCubeVec;
+
+char* rawImagePixels = nullptr;
+int width = 400;
+int height = 400;
 
 - (UIImage*)convertBufferToUIImage:(void*)rawImagePixels width:(int)width height:(int)height
 {
@@ -36,27 +45,16 @@ HCube* shapeCube;
 }
 
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    
-    
-    self.view.backgroundColor = [UIColor blueColor];
-    int width = 400;
-    int height = 400;
-    HScreenDevice::GetInstance()->Init(width,height);
-    shapeCube = new HCube();
-    HMatrix mat1 = GetRotateMat(0, 0.8, 0.8);
-    mat1.m[3][0] = 2;
-    mat1.m[2][0] = 0;
-    mat1.m[1][0] = 0;
-    shapeCube->Transform.ModleMat = mat1;
 
-    HScreenDevice::GetInstance()->shapeVec.push_back(shapeCube);
+- (void)OnFrameUpdate {
+    //旋转立方体
+    self.RotateValue = self.RotateValue + 0.01;
+    for (int i=0; i<shapeCubeVec.size(); i++) {
+        shapeCubeVec[i]->Transform.ModleMat = GetRotateMat(0, self.RotateValue, self.RotateValue);
+    }
+    //绘制
     HScreenDevice::GetInstance()->Draw();
-    
-    self.ContentView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, width, height)];
-    
-    char* rawImagePixels = new char[width*height*4];
+    //得到FBO
     for (int i = 0; i < HScreenDevice::GetInstance()->ScreenHeight; i++)
     {
         for (int j = 0; j < HScreenDevice::GetInstance()->ScreenWidth; j++)
@@ -68,22 +66,59 @@ HCube* shapeCube;
         }
     }
     
+    //更新UI
+    ImageContent = [self convertBufferToUIImage: rawImagePixels width : width height :height];
+    self.ContentView.image = ImageContent;
     
-
-    UIImage* image = [self convertBufferToUIImage: rawImagePixels width : width height :height];
-    self.ContentView.image = image;
-    
-    //free(rawImagePixels);
-    [self.view addSubview:self.ContentView];
 }
 
 
-- (void)dealloc {
+- (void)viewDidLoad {
+    NSLog(@"========   viewDidLoad   =======\n");
+    [super viewDidLoad];
+
+    self.RotateValue = 0;
+    self.view.backgroundColor = [UIColor blueColor];
+    
+    //软渲染器初始化
+    HScreenDevice::GetInstance()->Init(width,height);
+
+    HCube * shapeCube = new HCube();
+    shapeCube->Transform.ModleMat = GetRotateMat(0, self.RotateValue, self.RotateValue);
+    shapeCubeVec.push_back(shapeCube);
+    HScreenDevice::GetInstance()->shapeVec.push_back(shapeCube);
+    
+
+    
+    rawImagePixels = new char[width*height*4];
+    
+    //添加View
+    self.ContentView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, width, height)];
+    [self.view addSubview:self.ContentView];
+    
+    //渲染帧
+    MainThreadSchduledTimer = [NSTimer scheduledTimerWithTimeInterval:0.016 target:self selector:@selector(OnFrameUpdate) userInfo:nil repeats:YES];
+
+}
+
+
+- (void)viewDidUnload {
     NSLog(@"========   释放： dealloc   =======\n");
-    HScreenDevice::GetInstance()->shapeVec.clear();
-    if(shapeCube)
+    if(MainThreadSchduledTimer)
     {
-        free(shapeCube);
+        [MainThreadSchduledTimer invalidate];
+        MainThreadSchduledTimer = nil;
+    }
+
+    for(int i=0;i<shapeCubeVec.size();i++)
+    {
+        free(shapeCubeVec[i]);
+    }
+
+    if(rawImagePixels)
+    {
+        free(rawImagePixels);
+        rawImagePixels = nullptr;
     }
 }
 
