@@ -2,7 +2,7 @@
 ![](https://badgen.net/badge/language/Java/green)![](https://badgen.net/badge/language/C++/green)![](https://badgen.net/badge/language/CSharp/green)
 ![](https://badgen.net/badge/Platform/Android/cyan) ![](https://badgen.net/badge/Platform/iOS/cyan) ![](https://badgen.net/badge/Platform/Unity/cyan) ![](https://badgen.net/badge/Platform/Unreal/cyan)
 
-Android、iOS、Unity、Unreal都可以运行，不使用任何图形库接口，纯代码来实现渲染管线，比起学习Opengl等更好的理解渲染管线，代码中都有详细注解。
+Android、iOS、Unity、Unreal都可以运行，不使用任何图形库接口，纯代码来实现渲染管线，比起学习Opengl等更好的理解渲染管线，代码中都有详细注解。（觉得有趣麻烦给个star）
 ---
 
 |平台|语言|效果|工程路径|
