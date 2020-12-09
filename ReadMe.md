@@ -161,5 +161,7 @@ https://github.com/wlxklyh/SoftRenderer/blob/master/Unreal/Source/Graphic/SoftRe
 
 
 ## 附
+**欢迎加微信群讨论**
+![20201209124248](https://raw.githubusercontent.com/wlxklyh/imagebed/master/imageforvscode/20201209124248.png)
 **欢迎加微信讨论（备注Gituhb）**
 ![](https://raw.githubusercontent.com/wlxklyh/book/master/Tool/Resource/wcgif.gif)
