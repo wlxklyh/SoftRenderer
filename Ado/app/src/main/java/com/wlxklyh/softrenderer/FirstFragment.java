@@ -19,6 +19,7 @@ import android.graphics.Bitmap;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 //软渲染器参考：https://github.com/skywind3000/mini3d
@@ -1257,6 +1258,7 @@ public class FirstFragment extends Fragment {
     private long frameInternalTime = (int)(1000.0f / 60.0f);
     private long lastFrameTime = 0;
     private boolean softRendererHasInited = false;
+    private ReentrantLock screenBufferLock = new ReentrantLock();
     private HandlerThread rendererThread = new HandlerThread("SoftRenderer");
     private Handler rendererHandler;
     private Handler mainLooperHandler;
@@ -1297,8 +1299,13 @@ public class FirstFragment extends Fragment {
                     long nowTime = SystemClock.currentThreadTimeMillis();
                     if (nowTime - lastFrameTime > frameInternalTime) {
                         if (softRendererHasInited) {
-                            HScreenDevice.GetInstance().Draw();
-                            mainLooperHandler.post(FBOFlushToScreenRun);
+                            try {
+                                screenBufferLock.lock();
+                                HScreenDevice.GetInstance().Draw();
+                                mainLooperHandler.post(FBOFlushToScreenRun);
+                            } finally {
+                                screenBufferLock.unlock();
+                            }
                         }
                     }
                 }
@@ -1318,32 +1325,38 @@ public class FirstFragment extends Fragment {
     }
 
     private void flushToScreen() {
-        Log.i(TAG,"flushToScreen");
-        int width = 512;
-        int height = 512;
+        try {
+            screenBufferLock.lock();
+            Log.i(TAG,"flushToScreen");
+            int width = 512;
+            int height = 512;
 
-        Bitmap bitmap = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888);
-        for (int i = 0; i < HScreenDevice.GetInstance().ScreenHeight; i++)
-        {
-            for (int j = 0; j < HScreenDevice.GetInstance().ScreenWidth; j++) {
-                Integer RByte = HScreenDevice.GetInstance()
-                        .FrameBuff.get((i * HScreenDevice.GetInstance().ScreenWidth + j) * 4 + 0);
-                Integer GByte = HScreenDevice.GetInstance()
-                        .FrameBuff.get((i * HScreenDevice.GetInstance().ScreenWidth + j) * 4 + 1);
-                Integer BByte = HScreenDevice.GetInstance()
-                        .FrameBuff.get((i * HScreenDevice.GetInstance().ScreenWidth + j) * 4 + 2);
-                if (RByte == null) {
-                    Log.e(TAG,"RByte == null");
-                } else {
-                    int color = Color.argb(255,
-                            RByte,
-                            GByte,
-                            BByte
-                    );
-                    bitmap.setPixel(i,j,color);
+            Bitmap bitmap = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888);
+            for (int i = 0; i < HScreenDevice.GetInstance().ScreenHeight; i++)
+            {
+                for (int j = 0; j < HScreenDevice.GetInstance().ScreenWidth; j++) {
+                    Integer RByte = HScreenDevice.GetInstance()
+                            .FrameBuff.get((i * HScreenDevice.GetInstance().ScreenWidth + j) * 4 + 0);
+                    Integer GByte = HScreenDevice.GetInstance()
+                            .FrameBuff.get((i * HScreenDevice.GetInstance().ScreenWidth + j) * 4 + 1);
+                    Integer BByte = HScreenDevice.GetInstance()
+                            .FrameBuff.get((i * HScreenDevice.GetInstance().ScreenWidth + j) * 4 + 2);
+                    if (RByte == null) {
+                        Log.e(TAG,"RByte == null");
+                    } else {
+                        int color = Color.argb(255,
+                                RByte,
+                                GByte,
+                                BByte
+                        );
+                        bitmap.setPixel(i,j,color);
+                    }
                 }
             }
+            imgView.setImageBitmap(bitmap);
+        }finally {
+            screenBufferLock.unlock();
         }
-        imgView.setImageBitmap(bitmap);
+
     }
 }
