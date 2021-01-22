@@ -2,6 +2,10 @@ package com.wlxklyh.softrenderer;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,10 +14,8 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
+
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -292,6 +294,7 @@ class HTexture
 //渲染设备
 class  HScreenDevice
 {
+    private static final String TAG = "SoftRenderer";
     //============单例 Begin============
     public static HScreenDevice DeviceInstance;
     public static HScreenDevice GetInstance()
@@ -324,11 +327,12 @@ class  HScreenDevice
         ScreenHeight = height;
 
         //2、屏幕缓冲和深度缓冲
-        ClearScreen();
+        InitScreen();
     }
     // 清理屏幕
-    public void ClearScreen()
+    public void InitScreen()
     {
+        Log.i(TAG,"InitScreen");
         FrameBuff.clear();
         DepthBuff.clear();
         for (int i=0; i < ScreenWidth * ScreenHeight; i++)
@@ -340,6 +344,23 @@ class  HScreenDevice
             DepthBuff.add(0.0f);
         }
     }
+
+    // 清理屏幕
+    public void ClearScreen()
+    {
+        Log.i(TAG,"ClearScreen");
+
+        for (int i=0; i < ScreenWidth * ScreenHeight; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                FrameBuff.set(i * 4 + j,(Integer)255);
+            }
+            DepthBuff.set(i,0.0f);
+        }
+    }
+
+
     //=====================================================================
     // 主绘制函数
     //=====================================================================
@@ -1231,6 +1252,21 @@ class HCube implements HShape {
 
 
 public class FirstFragment extends Fragment {
+    private final static String TAG = "SoftRenderer";
+    private ImageView imgView;
+    private long frameInternalTime = (int)(1000.0f / 60.0f);
+    private long lastFrameTime = 0;
+    private boolean softRendererHasInited = false;
+    private HandlerThread rendererThread = new HandlerThread("SoftRenderer");
+    private Handler rendererHandler;
+    private Handler mainLooperHandler;
+    private Runnable FBOFlushToScreenRun = new Runnable() {
+        @Override
+        public void run() {
+            flushToScreen();
+        }
+    };
+
 
     @Override
     public View onCreateView(
@@ -1241,19 +1277,50 @@ public class FirstFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_first, container, false);
     }
 
+    Looper mainLooper = null;
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.i(TAG,"onViewCreated");
+        initSoftRenderer(view);
+    }
+
+    private void initSoftRenderer(@NonNull View view) {
+        Log.i(TAG,"initSoftRenderer");
+        //线程初始化
+        mainLooperHandler = new Handler(Looper.getMainLooper());
+        rendererThread.start();
+        rendererHandler = new Handler(rendererThread.getLooper());
+        rendererHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                while(true) {
+                    long nowTime = SystemClock.currentThreadTimeMillis();
+                    if (nowTime - lastFrameTime > frameInternalTime) {
+                        if (softRendererHasInited) {
+                            HScreenDevice.GetInstance().Draw();
+                            mainLooperHandler.post(FBOFlushToScreenRun);
+                        }
+                    }
+                }
+            }
+        });
+
+
+        //初始化充当屏幕的imgView
+        imgView = view.findViewById(R.id.imageView);
 
         //获取设备宽高 然后初始化
         int width = 512;
         int height = 512;
         HScreenDevice.GetInstance().Init(width,height);
         HScreenDevice.GetInstance().shape = new HCube();
+        softRendererHasInited = true;
+    }
 
-        HScreenDevice.GetInstance().Draw();
-
-        ImageView imgView = view.findViewById(R.id.imageView);
-
+    private void flushToScreen() {
+        Log.i(TAG,"flushToScreen");
+        int width = 512;
+        int height = 512;
 
         Bitmap bitmap = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888);
         for (int i = 0; i < HScreenDevice.GetInstance().ScreenHeight; i++)
@@ -1265,19 +1332,18 @@ public class FirstFragment extends Fragment {
                         .FrameBuff.get((i * HScreenDevice.GetInstance().ScreenWidth + j) * 4 + 1);
                 Integer BByte = HScreenDevice.GetInstance()
                         .FrameBuff.get((i * HScreenDevice.GetInstance().ScreenWidth + j) * 4 + 2);
-                Log.e("debug",RByte.toString());
-                int color = Color.argb(255,
-                        RByte,
-                        GByte,
-                        BByte
-                );
-                bitmap.setPixel(i,j,color);
-
+                if (RByte == null) {
+                    Log.e(TAG,"RByte == null");
+                } else {
+                    int color = Color.argb(255,
+                            RByte,
+                            GByte,
+                            BByte
+                    );
+                    bitmap.setPixel(i,j,color);
+                }
             }
         }
-
-
-
         imgView.setImageBitmap(bitmap);
     }
 }
