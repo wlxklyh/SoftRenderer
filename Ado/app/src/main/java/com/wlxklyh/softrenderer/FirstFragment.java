@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static com.wlxklyh.softrenderer.MathHelper.GetRotateMat;
+
 
 //软渲染器参考：https://github.com/skywind3000/mini3d
 //mini3d笔记：https://zhuanlan.zhihu.com/p/74510058
@@ -620,6 +622,10 @@ class HTransform
         Init();
     }
 
+    public float rotateX = 0.0f;
+    public float rotateY = 0.8f;
+    public float rotateZ = 0.8f;
+
     //Unity 里面就是 Position Rotation Scale来构建这个矩阵 后面这里可以拆分下更好理解
     // ModelMatrix，就是将模型坐标变换到WorldMatrix的Matrix，WorldMatrix = Mt * Mr * Ms  ModleMatrix =  Mt * Mr * Ms
     public HMatrix ModleMat;
@@ -1103,7 +1109,7 @@ class HCube implements HShape {
 
     //更新MVP矩阵
     void UpdateMVPMat() {
-        HMatrix mat = MathHelper.GetRotateMat(0, 0.8f, 0.8f);
+        HMatrix mat = GetRotateMat(Transform.rotateX, Transform.rotateY, Transform.rotateZ);
         Transform.ModleMat = mat;
         Transform.UpdateMVPMat();
     }
@@ -1255,7 +1261,7 @@ class HCube implements HShape {
 public class FirstFragment extends Fragment {
     private final static String TAG = "SoftRenderer";
     private ImageView imgView;
-    private long frameInternalTime = (int)(1000.0f / 60.0f);
+    private long frameInternalTime = (int)(1000.0f / 30.0f);
     private long lastFrameTime = 0;
     private boolean softRendererHasInited = false;
     private ReentrantLock screenBufferLock = new ReentrantLock();
@@ -1286,6 +1292,7 @@ public class FirstFragment extends Fragment {
         initSoftRenderer(view);
     }
 
+    private float RotateValue = 0.8f;
     private void initSoftRenderer(@NonNull View view) {
         Log.i(TAG,"initSoftRenderer");
         //线程初始化
@@ -1298,14 +1305,19 @@ public class FirstFragment extends Fragment {
                 while(true) {
                     long nowTime = SystemClock.currentThreadTimeMillis();
                     if (nowTime - lastFrameTime > frameInternalTime) {
+                        lastFrameTime = nowTime;
                         if (softRendererHasInited) {
                             try {
                                 screenBufferLock.lock();
+                                RotateValue = RotateValue + 0.01f;
+
+                                ((HCube)HScreenDevice.GetInstance().shape).Transform.rotateY = RotateValue;
+                                ((HCube)HScreenDevice.GetInstance().shape).Transform.rotateZ = RotateValue;
                                 HScreenDevice.GetInstance().Draw();
-                                mainLooperHandler.post(FBOFlushToScreenRun);
                             } finally {
                                 screenBufferLock.unlock();
                             }
+                            mainLooperHandler.post(FBOFlushToScreenRun);
                         }
                     }
                 }
@@ -1327,10 +1339,8 @@ public class FirstFragment extends Fragment {
     private void flushToScreen() {
         try {
             screenBufferLock.lock();
-            Log.i(TAG,"flushToScreen");
             int width = 512;
             int height = 512;
-
             Bitmap bitmap = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888);
             for (int i = 0; i < HScreenDevice.GetInstance().ScreenHeight; i++)
             {
