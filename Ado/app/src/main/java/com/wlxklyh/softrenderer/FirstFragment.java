@@ -238,7 +238,7 @@ class MathHelper
         matRet.m[3][3] = 1.0f;
         return matRet;
     }
-    //获取投影矩阵 乘以这个矩阵之后得到的是相机空间的坐标
+    //获取投影矩阵 乘以这个矩阵之后得到的是裁剪空间的坐标
     public static HMatrix GetPerspectiveMat(float fovy, float aspect, float zn, float zf)
     {
         float fax = 1.0f / (float)Math.tan(fovy * 0.5f);
@@ -667,7 +667,7 @@ class HTransform
         return Origin.MulMat(MVPMat);
     }
 
-    //归一化 且屏幕坐标
+    //归一化 然后转 屏幕坐标
     //宽->
     //高↓
     public HVector HomogenizeToScreenCoord(HVector Origin)
