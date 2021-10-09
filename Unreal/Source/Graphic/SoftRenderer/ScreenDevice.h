@@ -169,7 +169,7 @@ public:
 
 		//2、屏幕缓冲和深度缓冲 
 		FrameBuff = (unsigned char*)malloc(ScreenWidth * ScreenHeight * 4);
-		DepthBuff = (float*)malloc(ScreenWidth * ScreenHeight);
+		DepthBuff = (float*)malloc(ScreenWidth * ScreenHeight * 4);
 	}
 
 	// 清理屏幕

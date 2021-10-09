@@ -1,0 +1,8 @@
+# gitignore folder
+
+.idea/
+
+Content/StarterContent/
+
+enc_temp_foler/
+
