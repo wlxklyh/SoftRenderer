@@ -195,7 +195,7 @@ public:
 
         //2、屏幕缓冲和深度缓冲
         FrameBuff = new unsigned char[ScreenWidth * ScreenHeight * 4];
-        DepthBuff = new float[ScreenWidth * ScreenHeight];
+        DepthBuff = new float[ScreenWidth * ScreenHeight * 4];
     }
 
     // 清理屏幕
