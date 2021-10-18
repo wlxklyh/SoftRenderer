@@ -3,3 +3,7 @@ Unreal/Intermediate/
 Unreal/Binaries/
 Unreal/Saved/
 Unreal/UnrealShader.sln
+
+cmake-build-debug
+build
+.idea
