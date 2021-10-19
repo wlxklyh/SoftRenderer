@@ -658,7 +658,7 @@ public:
 			up
 		);
 		// fov = 90度 0.5pai
-		ProjectionMat = GetPerspectiveMat(3.1415926f * 0.5f, (float)ScreenHeight / (float)ScreenWidth, 1.0f, 500.0f);
+		ProjectionMat = GetPerspectiveMat(3.1415926f * 0.5f, float(ScreenWidth) / float(ScreenHeight), 1.0f, 500.0f);
 		UpdateMVPMat();
 	}
 

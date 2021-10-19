@@ -8,11 +8,10 @@ int main() {
     out.open("OutputPic.ppm");
 
     //（1）宽高
-    HScreenDevice::GetInstance()->shape = new HCube();
     int PicW = 640;
     int PicH = 960;
     HScreenDevice::GetInstance()->Init(PicW,PicH);
-
+    HScreenDevice::GetInstance()->shape = new HCube();
     //（2）这个是ppm图片格式 后面渲染的结果用这个来显示
     out << "P3\n" << PicW << " " << PicH << "\n255\n";
 
