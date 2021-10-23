@@ -4,6 +4,7 @@ Unreal/Binaries/
 Unreal/Saved/
 Unreal/UnrealShader.sln
 
+cmake-build-release
 cmake-build-debug
 build
 .idea
