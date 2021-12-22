@@ -5,4 +5,13 @@ MESSAGE(STATUS "Main cmake code")
 set(NAME SoftRenderer)
 project(SoftRenderer)
 
-ADD_EXECUTABLE(SoftRenderer Main.cpp)
+add_executable(SoftRenderer Main.cpp)
+
+include_directories(ThirdParty/easyx/include)
+
+target_link_libraries(${PROJECT_NAME}
+        EasyXa
+        EasyXw
+        )
+
+target_link_directories(${PROJECT_NAME} PUBLIC  ${CMAKE_SOURCE_DIR}/ThirdParty/easyx/lib/)
